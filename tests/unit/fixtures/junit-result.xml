@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="12.5" tests="5" failures="2" errors="0">
+  <testsuite name="com.app.AuthTest" tests="3" failures="1" time="8.2" timestamp="2025-01-15T10:00:00">
+    <testcase name="testLogin" classname="com.app.AuthTest" time="2.1"/>
+    <testcase name="testLogout" classname="com.app.AuthTest" time="1.5">
+      <failure message="Connection refused">ECONNREFUSED: connect ECONNREFUSED 127.0.0.1:3000</failure>
+    </testcase>
+    <testcase name="testSessionExpiry" classname="com.app.AuthTest" time="4.6"/>
+  </testsuite>
+  <testsuite name="com.app.CartTest" tests="2" failures="1" time="4.3" timestamp="2025-01-15T10:01:00">
+    <testcase name="testAddToCart" classname="com.app.CartTest" time="1.8"/>
+    <testcase name="testCheckout" classname="com.app.CartTest" time="2.5">
+      <failure message="Timeout waiting for element">timeout: waiting for selector .checkout-btn exceeded 5000ms</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

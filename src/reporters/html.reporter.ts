@@ -1,0 +1,238 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import { FlakinessReport, FlakinessRecord, TrendPoint } from '../core/types';
+import { logger } from '../utils/logger';
+
+export class HtmlReporter {
+  private outputPath: string;
+
+  constructor(outputPath?: string) {
+    this.outputPath = outputPath || '.flaky-detective/reports/report.html';
+  }
+
+  report(result: FlakinessReport): void {
+    const dir = path.dirname(this.outputPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    const html = this.generateHtml(result);
+    fs.writeFileSync(this.outputPath, html, 'utf-8');
+    logger.info(`HTML report saved to ${this.outputPath}`);
+  }
+
+  private generateHtml(result: FlakinessReport): string {
+    const rateClass = result.overallFlakinessRate > 0.2 ? 'fail' : result.overallFlakinessRate > 0.05 ? 'warn' : 'pass';
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flaky Test Detective Report</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; padding: 24px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { color: #f0f6fc; margin-bottom: 8px; font-size: 24px; }
+  .meta { color: #8b949e; font-size: 14px; margin-bottom: 24px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .stat { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center; }
+  .stat-value { font-size: 28px; font-weight: 700; }
+  .stat-label { color: #8b949e; font-size: 12px; text-transform: uppercase; margin-top: 4px; }
+  .pass { color: #3fb950; }
+  .fail { color: #f85149; }
+  .warn { color: #d29922; }
+  .section { margin-bottom: 32px; }
+  .section-title { font-size: 18px; font-weight: 600; color: #f0f6fc; margin-bottom: 16px; }
+  .chart-container { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 10px 12px; background: #161b22; border: 1px solid #30363d; color: #8b949e; font-size: 12px; text-transform: uppercase; }
+  td { padding: 10px 12px; border: 1px solid #21262d; font-size: 14px; }
+  tr:hover td { background: #161b22; }
+  .score-bar { display: inline-block; height: 8px; border-radius: 4px; min-width: 4px; }
+  .pattern-tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
+  .pattern-timing { background: #d2992233; color: #d29922; }
+  .pattern-network { background: #f8514933; color: #f85149; }
+  .pattern-ordering { background: #58a6ff33; color: #58a6ff; }
+  .quarantine-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #f8514922; color: #f85149; }
+  .active-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: #3fb95022; color: #3fb950; }
+  .test-row { cursor: pointer; }
+  .test-details { display: none; }
+  .test-details.open { display: table-row; }
+  .test-details td { background: #161b22; padding: 16px; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .detail-item label { display: block; color: #8b949e; font-size: 11px; text-transform: uppercase; margin-bottom: 4px; }
+  .detail-item pre { background: #0d1117; border: 1px solid #30363d; border-radius: 4px; padding: 8px; font-size: 12px; white-space: pre-wrap; max-height: 150px; overflow-y: auto; }
+  .footer { text-align: center; color: #484f58; font-size: 12px; margin-top: 32px; padding-top: 16px; border-top: 1px solid #21262d; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Flaky Test Detective Report</h1>
+  <div class="meta">${this.escapeHtml(result.timestamp)}</div>
+
+  <div class="summary">
+    <div class="stat">
+      <div class="stat-value">${result.totalTests}</div>
+      <div class="stat-label">Tests Tracked</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value warn">${result.flakyTests}</div>
+      <div class="stat-label">Flaky Tests</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value fail">${result.quarantinedTests}</div>
+      <div class="stat-label">Quarantined</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value ${rateClass}">${(result.overallFlakinessRate * 100).toFixed(1)}%</div>
+      <div class="stat-label">Flakiness Rate</div>
+    </div>
+  </div>
+
+  ${result.trends.length > 0 ? this.renderTrendChart(result.trends) : ''}
+
+  <div class="section">
+    <div class="section-title">Flaky Tests</div>
+    ${result.records.length === 0 ? '<p class="pass">No flaky tests detected!</p>' : this.renderTable(result.records)}
+  </div>
+
+  <div class="footer">
+    Generated by flaky-test-detective
+  </div>
+</div>
+<script>
+document.querySelectorAll('.test-row').forEach(row => {
+  row.addEventListener('click', () => {
+    const details = row.nextElementSibling;
+    if (details) details.classList.toggle('open');
+  });
+});
+</script>
+</body>
+</html>`;
+  }
+
+  private renderTrendChart(trends: TrendPoint[]): string {
+    if (trends.length < 2) return '';
+
+    const width = 600;
+    const height = 200;
+    const padding = 40;
+    const chartWidth = width - padding * 2;
+    const chartHeight = height - padding * 2;
+
+    const maxRate = Math.max(...trends.map((t) => t.flakinessRate), 0.01);
+
+    const points = trends
+      .map((t, i) => {
+        const x = padding + (i / (trends.length - 1)) * chartWidth;
+        const y = padding + chartHeight - (t.flakinessRate / maxRate) * chartHeight;
+        return `${x},${y}`;
+      })
+      .join(' ');
+
+    const areaPoints = `${padding},${padding + chartHeight} ${points} ${padding + chartWidth},${padding + chartHeight}`;
+
+    return `
+  <div class="chart-container">
+    <div class="section-title">Flakiness Trend (30 days)</div>
+    <svg viewBox="0 0 ${width} ${height}" width="100%" style="max-width:${width}px">
+      <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${padding + chartHeight}" stroke="#30363d" stroke-width="1"/>
+      <line x1="${padding}" y1="${padding + chartHeight}" x2="${padding + chartWidth}" y2="${padding + chartHeight}" stroke="#30363d" stroke-width="1"/>
+      <polygon points="${areaPoints}" fill="#d2992220"/>
+      <polyline points="${points}" fill="none" stroke="#d29922" stroke-width="2"/>
+      ${trends.map((t, i) => {
+        const x = padding + (i / (trends.length - 1)) * chartWidth;
+        const y = padding + chartHeight - (t.flakinessRate / maxRate) * chartHeight;
+        return `<circle cx="${x}" cy="${y}" r="3" fill="#d29922"/>`;
+      }).join('\n      ')}
+      <text x="${padding}" y="${padding - 8}" fill="#8b949e" font-size="10">${(maxRate * 100).toFixed(0)}%</text>
+      <text x="${padding}" y="${padding + chartHeight + 16}" fill="#8b949e" font-size="10">${trends[0]?.date || ''}</text>
+      <text x="${padding + chartWidth}" y="${padding + chartHeight + 16}" fill="#8b949e" font-size="10" text-anchor="end">${trends[trends.length - 1]?.date || ''}</text>
+    </svg>
+  </div>`;
+  }
+
+  private renderTable(records: FlakinessRecord[]): string {
+    const rows = records.map((r, i) => this.renderRow(r, i)).join('\n');
+
+    return `
+    <table>
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th>Suite</th>
+          <th>Score</th>
+          <th>Runs</th>
+          <th>Pass/Fail</th>
+          <th>Patterns</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>`;
+  }
+
+  private renderRow(record: FlakinessRecord, index: number): string {
+    const scoreColor = record.flakinessScore >= 0.3 ? '#f85149' : record.flakinessScore >= 0.1 ? '#d29922' : '#3fb950';
+    const scoreWidth = Math.max(record.flakinessScore * 100, 4);
+    const patterns = record.patterns
+      .map((p) => `<span class="pattern-tag pattern-${p.type}">${p.type} (${(p.confidence * 100).toFixed(0)}%)</span>`)
+      .join('') || '-';
+    const status = record.quarantined
+      ? '<span class="quarantine-badge">QUARANTINED</span>'
+      : '<span class="active-badge">ACTIVE</span>';
+
+    return `
+        <tr class="test-row">
+          <td>${this.escapeHtml(record.name)}</td>
+          <td>${this.escapeHtml(record.suite)}</td>
+          <td>
+            <span style="color:${scoreColor}">${(record.flakinessScore * 100).toFixed(0)}%</span>
+            <span class="score-bar" style="background:${scoreColor};width:${scoreWidth}px"></span>
+          </td>
+          <td>${record.totalRuns}</td>
+          <td><span class="pass">${record.passCount}</span> / <span class="fail">${record.failCount}</span></td>
+          <td>${patterns}</td>
+          <td>${status}</td>
+        </tr>
+        <tr class="test-details" id="detail-${index}">
+          <td colspan="7">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <label>Duration Stats</label>
+                <pre>${this.formatDurations(record)}</pre>
+              </div>
+              <div class="detail-item">
+                <label>Recent Errors</label>
+                <pre>${record.errors.length > 0 ? record.errors.slice(-3).map((e) => this.escapeHtml(e)).join('\n\n') : 'No errors recorded'}</pre>
+              </div>
+              ${record.patterns.map((p) => `
+              <div class="detail-item">
+                <label>${p.type} Pattern (${(p.confidence * 100).toFixed(0)}%)</label>
+                <pre>${this.escapeHtml(p.description)}\n\n${p.evidence.map((e) => this.escapeHtml(e)).join('\n')}</pre>
+              </div>`).join('')}
+            </div>
+          </td>
+        </tr>`;
+  }
+
+  private formatDurations(record: FlakinessRecord): string {
+    if (record.durations.length === 0) return 'No duration data';
+    const sorted = [...record.durations].sort((a, b) => a - b);
+    const avg = record.durations.reduce((s, v) => s + v, 0) / record.durations.length;
+    return `Avg: ${avg.toFixed(0)}ms\nMin: ${sorted[0]}ms\nMax: ${sorted[sorted.length - 1]}ms\nSamples: ${sorted.length}`;
+  }
+
+  private escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+}

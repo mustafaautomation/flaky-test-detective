@@ -1,0 +1,71 @@
+{
+  "config": {
+    "rootDir": "/project"
+  },
+  "suites": [
+    {
+      "title": "auth.spec.ts",
+      "tests": [],
+      "suites": [
+        {
+          "title": "Login",
+          "tests": [
+            {
+              "title": "should login with valid credentials",
+              "status": "passed",
+              "duration": 1200,
+              "results": [
+                { "status": "passed", "duration": 1200 }
+              ]
+            },
+            {
+              "title": "should show error for invalid password",
+              "status": "failed",
+              "duration": 3500,
+              "results": [
+                { "status": "failed", "duration": 1500, "error": { "message": "ETIMEDOUT: connection timed out" }, "retry": 0 },
+                { "status": "failed", "duration": 2000, "error": { "message": "ETIMEDOUT: connection timed out" }, "retry": 1 }
+              ]
+            },
+            {
+              "title": "should redirect after login",
+              "status": "passed",
+              "duration": 800,
+              "results": [
+                { "status": "failed", "duration": 400, "error": { "message": "Expected URL to contain /dashboard" }, "retry": 0 },
+                { "status": "passed", "duration": 800, "retry": 1 }
+              ]
+            }
+          ],
+          "suites": []
+        }
+      ]
+    },
+    {
+      "title": "dashboard.spec.ts",
+      "tests": [
+        {
+          "title": "should display user name",
+          "status": "passed",
+          "duration": 500,
+          "results": [
+            { "status": "passed", "duration": 500 }
+          ]
+        },
+        {
+          "title": "should load widgets",
+          "status": "skipped",
+          "duration": 0,
+          "results": [
+            { "status": "skipped", "duration": 0 }
+          ]
+        }
+      ],
+      "suites": []
+    }
+  ],
+  "stats": {
+    "startTime": "2025-01-15T10:00:00.000Z",
+    "duration": 6000
+  }
+}

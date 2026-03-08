@@ -1,0 +1,69 @@
+{
+  "config": {
+    "rootDir": "/project"
+  },
+  "suites": [
+    {
+      "title": "auth.spec.ts",
+      "tests": [],
+      "suites": [
+        {
+          "title": "Login",
+          "tests": [
+            {
+              "title": "should login with valid credentials",
+              "status": "passed",
+              "duration": 1100,
+              "results": [
+                { "status": "passed", "duration": 1100 }
+              ]
+            },
+            {
+              "title": "should show error for invalid password",
+              "status": "passed",
+              "duration": 900,
+              "results": [
+                { "status": "passed", "duration": 900 }
+              ]
+            },
+            {
+              "title": "should redirect after login",
+              "status": "failed",
+              "duration": 5000,
+              "results": [
+                { "status": "failed", "duration": 5000, "error": { "message": "net::ERR_CONNECTION_RESET" } }
+              ]
+            }
+          ],
+          "suites": []
+        }
+      ]
+    },
+    {
+      "title": "dashboard.spec.ts",
+      "tests": [
+        {
+          "title": "should display user name",
+          "status": "passed",
+          "duration": 450,
+          "results": [
+            { "status": "passed", "duration": 450 }
+          ]
+        },
+        {
+          "title": "should load widgets",
+          "status": "passed",
+          "duration": 700,
+          "results": [
+            { "status": "passed", "duration": 700 }
+          ]
+        }
+      ],
+      "suites": []
+    }
+  ],
+  "stats": {
+    "startTime": "2025-01-16T10:00:00.000Z",
+    "duration": 8150
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "flaky-test-detective",
+  "version": "1.0.0",
+  "description": "Detect, track, and quarantine flaky tests with pattern analysis and trend reporting",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "flaky-detective": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "flaky",
+    "test",
+    "detective",
+    "playwright",
+    "junit",
+    "quarantine",
+    "ci",
+    "testing",
+    "quality"
+  ],
+  "author": "Muhammad Mustafa",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.7",
+    "fast-xml-parser": "^4.5.1",
+    "sql.js": "^1.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/sql.js": "^1.4.9",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
