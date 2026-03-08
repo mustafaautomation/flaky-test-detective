@@ -31,7 +31,7 @@
   "homepage": "https://github.com/mustafaautomation/flaky-test-detective#readme",
   "bugs": { "url": "https://github.com/mustafaautomation/flaky-test-detective/issues" },
   "dependencies": {
-    "commander": "^12.1.0",
+    "commander": "^14.0.3",
     "dotenv": "^16.4.7",
     "fast-xml-parser": "^4.5.1",
     "sql.js": "^1.11.0"
