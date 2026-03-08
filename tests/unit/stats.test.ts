@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { mean, standardDeviation, coefficientOfVariation, median, percentile, flakinessScore } from '../../src/utils/stats';
+import {
+  mean,
+  standardDeviation,
+  coefficientOfVariation,
+  median,
+  percentile,
+  flakinessScore,
+} from '../../src/utils/stats';
 
 describe('stats', () => {
   describe('mean', () => {

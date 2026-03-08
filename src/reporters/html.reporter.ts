@@ -22,7 +22,12 @@ export class HtmlReporter {
   }
 
   private generateHtml(result: FlakinessReport): string {
-    const rateClass = result.overallFlakinessRate > 0.2 ? 'fail' : result.overallFlakinessRate > 0.05 ? 'warn' : 'pass';
+    const rateClass =
+      result.overallFlakinessRate > 0.2
+        ? 'fail'
+        : result.overallFlakinessRate > 0.05
+          ? 'warn'
+          : 'pass';
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -143,11 +148,13 @@ document.querySelectorAll('.test-row').forEach(row => {
       <line x1="${padding}" y1="${padding + chartHeight}" x2="${padding + chartWidth}" y2="${padding + chartHeight}" stroke="#30363d" stroke-width="1"/>
       <polygon points="${areaPoints}" fill="#d2992220"/>
       <polyline points="${points}" fill="none" stroke="#d29922" stroke-width="2"/>
-      ${trends.map((t, i) => {
-        const x = padding + (i / (trends.length - 1)) * chartWidth;
-        const y = padding + chartHeight - (t.flakinessRate / maxRate) * chartHeight;
-        return `<circle cx="${x}" cy="${y}" r="3" fill="#d29922"/>`;
-      }).join('\n      ')}
+      ${trends
+        .map((t, i) => {
+          const x = padding + (i / (trends.length - 1)) * chartWidth;
+          const y = padding + chartHeight - (t.flakinessRate / maxRate) * chartHeight;
+          return `<circle cx="${x}" cy="${y}" r="3" fill="#d29922"/>`;
+        })
+        .join('\n      ')}
       <text x="${padding}" y="${padding - 8}" fill="#8b949e" font-size="10">${(maxRate * 100).toFixed(0)}%</text>
       <text x="${padding}" y="${padding + chartHeight + 16}" fill="#8b949e" font-size="10">${trends[0]?.date || ''}</text>
       <text x="${padding + chartWidth}" y="${padding + chartHeight + 16}" fill="#8b949e" font-size="10" text-anchor="end">${trends[trends.length - 1]?.date || ''}</text>
@@ -178,11 +185,20 @@ document.querySelectorAll('.test-row').forEach(row => {
   }
 
   private renderRow(record: FlakinessRecord, index: number): string {
-    const scoreColor = record.flakinessScore >= 0.3 ? '#f85149' : record.flakinessScore >= 0.1 ? '#d29922' : '#3fb950';
+    const scoreColor =
+      record.flakinessScore >= 0.3
+        ? '#f85149'
+        : record.flakinessScore >= 0.1
+          ? '#d29922'
+          : '#3fb950';
     const scoreWidth = Math.max(record.flakinessScore * 100, 4);
-    const patterns = record.patterns
-      .map((p) => `<span class="pattern-tag pattern-${p.type}">${p.type} (${(p.confidence * 100).toFixed(0)}%)</span>`)
-      .join('') || '-';
+    const patterns =
+      record.patterns
+        .map(
+          (p) =>
+            `<span class="pattern-tag pattern-${p.type}">${p.type} (${(p.confidence * 100).toFixed(0)}%)</span>`,
+        )
+        .join('') || '-';
     const status = record.quarantined
       ? '<span class="quarantine-badge">QUARANTINED</span>'
       : '<span class="active-badge">ACTIVE</span>';
@@ -209,13 +225,24 @@ document.querySelectorAll('.test-row').forEach(row => {
               </div>
               <div class="detail-item">
                 <label>Recent Errors</label>
-                <pre>${record.errors.length > 0 ? record.errors.slice(-3).map((e) => this.escapeHtml(e)).join('\n\n') : 'No errors recorded'}</pre>
+                <pre>${
+                  record.errors.length > 0
+                    ? record.errors
+                        .slice(-3)
+                        .map((e) => this.escapeHtml(e))
+                        .join('\n\n')
+                    : 'No errors recorded'
+                }</pre>
               </div>
-              ${record.patterns.map((p) => `
+              ${record.patterns
+                .map(
+                  (p) => `
               <div class="detail-item">
                 <label>${p.type} Pattern (${(p.confidence * 100).toFixed(0)}%)</label>
                 <pre>${this.escapeHtml(p.description)}\n\n${p.evidence.map((e) => this.escapeHtml(e)).join('\n')}</pre>
-              </div>`).join('')}
+              </div>`,
+                )
+                .join('')}
             </div>
           </td>
         </tr>`;

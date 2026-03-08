@@ -14,7 +14,14 @@ function makeSampleRun(): ParsedRunResult {
     duration: 5000,
     tests: [
       { name: 'test-a', suite: 'suite-1', status: 'passed', duration: 100, position: 0 },
-      { name: 'test-b', suite: 'suite-1', status: 'failed', duration: 200, error: 'assertion failed', position: 1 },
+      {
+        name: 'test-b',
+        suite: 'suite-1',
+        status: 'failed',
+        duration: 200,
+        error: 'assertion failed',
+        position: 1,
+      },
       { name: 'test-c', suite: 'suite-2', status: 'passed', duration: 150, position: 2 },
     ],
   };
@@ -96,7 +103,13 @@ describe('JsonStorage', () => {
     const run1 = makeSampleRun();
     storage.storeRun(run1);
 
-    const run2 = { ...run1, tests: run1.tests.map((t) => ({ ...t, status: t.status === 'passed' ? 'failed' as const : 'passed' as const })) };
+    const run2 = {
+      ...run1,
+      tests: run1.tests.map((t) => ({
+        ...t,
+        status: t.status === 'passed' ? ('failed' as const) : ('passed' as const),
+      })),
+    };
     storage.storeRun(run2);
 
     const records = storage.getAllRecords();

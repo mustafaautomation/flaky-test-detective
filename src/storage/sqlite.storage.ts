@@ -79,7 +79,7 @@ export class SqliteStorage extends BaseStorage {
     this.db.run(
       `INSERT INTO runs (timestamp, framework, total_tests, passed, failed, skipped, duration)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [run.timestamp, run.framework, run.tests.length, passed, failed, skipped, run.duration]
+      [run.timestamp, run.framework, run.tests.length, passed, failed, skipped, run.duration],
     );
 
     for (const test of run.tests) {
@@ -97,9 +97,7 @@ export class SqliteStorage extends BaseStorage {
         const newTotalRuns = existing.totalRuns + 1;
         const newScore = flakinessScore(newPassCount, newFailCount);
         const durations = [...existing.durations, test.duration].slice(-50);
-        const errors = test.error
-          ? [...existing.errors, test.error].slice(-20)
-          : existing.errors;
+        const errors = test.error ? [...existing.errors, test.error].slice(-20) : existing.errors;
         const positions =
           test.position !== undefined
             ? [...existing.positions, test.position].slice(-50)
@@ -111,11 +109,17 @@ export class SqliteStorage extends BaseStorage {
             flakiness_score = ?, last_seen = ?, durations = ?, errors = ?, positions = ?
           WHERE test_id = ?`,
           [
-            newPassCount, newFailCount, newSkipCount, newTotalRuns,
-            newScore, run.timestamp,
-            JSON.stringify(durations), JSON.stringify(errors), JSON.stringify(positions),
+            newPassCount,
+            newFailCount,
+            newSkipCount,
+            newTotalRuns,
+            newScore,
+            run.timestamp,
+            JSON.stringify(durations),
+            JSON.stringify(errors),
+            JSON.stringify(positions),
             testId,
-          ]
+          ],
         );
       } else {
         const score = flakinessScore(passInc, failInc);
@@ -123,13 +127,19 @@ export class SqliteStorage extends BaseStorage {
           `INSERT INTO test_records (test_id, name, suite, pass_count, fail_count, skip_count, total_runs, flakiness_score, first_seen, last_seen, durations, errors, positions)
            VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?)`,
           [
-            testId, test.name, test.suite,
-            passInc, failInc, skipInc,
-            score, run.timestamp, run.timestamp,
+            testId,
+            test.name,
+            test.suite,
+            passInc,
+            failInc,
+            skipInc,
+            score,
+            run.timestamp,
+            run.timestamp,
             JSON.stringify([test.duration]),
             JSON.stringify(test.error ? [test.error] : []),
             JSON.stringify(test.position !== undefined ? [test.position] : []),
-          ]
+          ],
         );
       }
     }
@@ -171,13 +181,19 @@ export class SqliteStorage extends BaseStorage {
         positions = ?, patterns = ?, quarantined = ?
       WHERE test_id = ?`,
       [
-        record.passCount, record.failCount, record.skipCount, record.totalRuns,
-        record.flakinessScore, record.lastSeen,
-        JSON.stringify(record.durations), JSON.stringify(record.errors),
-        JSON.stringify(record.positions), JSON.stringify(record.patterns),
+        record.passCount,
+        record.failCount,
+        record.skipCount,
+        record.totalRuns,
+        record.flakinessScore,
+        record.lastSeen,
+        JSON.stringify(record.durations),
+        JSON.stringify(record.errors),
+        JSON.stringify(record.positions),
+        JSON.stringify(record.patterns),
         record.quarantined ? 1 : 0,
         record.testId,
-      ]
+      ],
     );
     this.save();
   }
@@ -192,7 +208,7 @@ export class SqliteStorage extends BaseStorage {
       FROM runs
       WHERE timestamp >= date('now', '-' || ? || ' days')
       GROUP BY substr(timestamp, 1, 10)
-      ORDER BY date`
+      ORDER BY date`,
     );
     stmt.bind([days]);
 

@@ -32,7 +32,12 @@ function makeSampleReport(): FlakinessReport {
         positions: [0, 3, 1, 5, 2],
         patterns: [
           { type: 'timing', confidence: 0.8, description: 'High variance', evidence: ['CV: 120%'] },
-          { type: 'network', confidence: 0.6, description: 'Network errors', evidence: ['ETIMEDOUT'] },
+          {
+            type: 'network',
+            confidence: 0.6,
+            description: 'Network errors',
+            evidence: ['ETIMEDOUT'],
+          },
         ],
         quarantined: true,
       },

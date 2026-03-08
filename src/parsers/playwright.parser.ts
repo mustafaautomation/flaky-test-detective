@@ -34,10 +34,7 @@ export class PlaywrightParser extends BaseParser {
   canParse(content: string): boolean {
     try {
       const data = JSON.parse(content);
-      return (
-        Array.isArray(data.suites) &&
-        (data.config !== undefined || data.stats !== undefined)
-      );
+      return Array.isArray(data.suites) && (data.config !== undefined || data.stats !== undefined);
     } catch {
       return false;
     }

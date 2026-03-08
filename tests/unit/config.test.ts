@@ -31,7 +31,7 @@ describe('config', () => {
         storage: { type: 'json', path: './data.json' },
         thresholds: { flakiness: 0.2 },
       }),
-      'utf-8'
+      'utf-8',
     );
 
     const config = loadConfig(configPath);

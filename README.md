@@ -1,8 +1,10 @@
 # Flaky Test Detective
 
-![CI](https://github.com/mustafaautomation/flaky-test-detective/actions/workflows/ci.yml/badge.svg)
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)
+[![CI](https://github.com/mustafaautomation/flaky-test-detective/actions/workflows/ci.yml/badge.svg)](https://github.com/mustafaautomation/flaky-test-detective/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
 
 Detect, track, and quarantine flaky tests with pattern analysis and trend reporting.
 

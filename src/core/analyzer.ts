@@ -99,7 +99,9 @@ export class Analyzer {
     }
 
     const flakyRecords = records.filter(
-      (r) => r.flakinessScore >= this.config.thresholds.flakiness && r.totalRuns >= this.config.thresholds.minRuns
+      (r) =>
+        r.flakinessScore >= this.config.thresholds.flakiness &&
+        r.totalRuns >= this.config.thresholds.minRuns,
     );
 
     const quarantinedCount = records.filter((r) => r.quarantined).length;

@@ -37,4 +37,11 @@ export { GithubReporter } from './reporters/github.reporter';
 
 // Utils
 export { logger, setLogLevel, getLogLevel } from './utils/logger';
-export { flakinessScore, mean, standardDeviation, coefficientOfVariation, median, percentile } from './utils/stats';
+export {
+  flakinessScore,
+  mean,
+  standardDeviation,
+  coefficientOfVariation,
+  median,
+  percentile,
+} from './utils/stats';

@@ -65,7 +65,11 @@ describe('NetworkDetector', () => {
 
   it('should detect network-related errors', () => {
     const record = makeRecord({
-      errors: ['ECONNREFUSED: connect failed', 'ETIMEDOUT: request timed out', 'normal assertion error'],
+      errors: [
+        'ECONNREFUSED: connect failed',
+        'ETIMEDOUT: request timed out',
+        'normal assertion error',
+      ],
     });
 
     const pattern = detector.detect(record, DEFAULT_CONFIG);

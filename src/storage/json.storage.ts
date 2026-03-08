@@ -106,9 +106,7 @@ export class JsonStorage extends BaseStorage {
   }
 
   getAllRecords(): FlakinessRecord[] {
-    return Object.values(this.data.records).sort(
-      (a, b) => b.flakinessScore - a.flakinessScore
-    );
+    return Object.values(this.data.records).sort((a, b) => b.flakinessScore - a.flakinessScore);
   }
 
   updateRecord(record: FlakinessRecord): void {

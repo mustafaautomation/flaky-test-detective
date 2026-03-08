@@ -53,7 +53,9 @@ describe('PlaywrightParser', () => {
     const content = fs.readFileSync(FIXTURE_PATH, 'utf-8');
     const result = parser.parse(content);
 
-    const retriedTest = result.tests.find((t) => t.name === 'should show error for invalid password');
+    const retriedTest = result.tests.find(
+      (t) => t.name === 'should show error for invalid password',
+    );
     expect(retriedTest?.retries).toBe(1);
   });
 

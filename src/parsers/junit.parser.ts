@@ -31,7 +31,11 @@ export class JUnitParser extends BaseParser {
   name = 'junit';
 
   canParse(content: string): boolean {
-    return content.trimStart().startsWith('<?xml') || content.includes('<testsuites') || content.includes('<testsuite');
+    return (
+      content.trimStart().startsWith('<?xml') ||
+      content.includes('<testsuites') ||
+      content.includes('<testsuite')
+    );
   }
 
   parse(content: string): ParsedRunResult {
@@ -65,14 +69,14 @@ export class JUnitParser extends BaseParser {
           status = 'skipped';
         } else if (tc.failure !== undefined) {
           status = 'failed';
-          error = typeof tc.failure === 'string'
-            ? tc.failure
-            : tc.failure['@_message'] || tc.failure['#text'];
+          error =
+            typeof tc.failure === 'string'
+              ? tc.failure
+              : tc.failure['@_message'] || tc.failure['#text'];
         } else if (tc.error !== undefined) {
           status = 'failed';
-          error = typeof tc.error === 'string'
-            ? tc.error
-            : tc.error['@_message'] || tc.error['#text'];
+          error =
+            typeof tc.error === 'string' ? tc.error : tc.error['@_message'] || tc.error['#text'];
         }
 
         tests.push({

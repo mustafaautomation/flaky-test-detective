@@ -25,7 +25,11 @@ program
   .description('Analyze test results for flakiness')
   .argument('<files...>', 'Test result files (Playwright JSON or JUnit XML)')
   .option('-c, --config <path>', 'Path to config file')
-  .option('-r, --reporter <type>', 'Reporter: console, json, html, github (comma-separated)', 'console')
+  .option(
+    '-r, --reporter <type>',
+    'Reporter: console, json, html, github (comma-separated)',
+    'console',
+  )
   .option('-o, --output <dir>', 'Output directory for reports', '.flaky-detective/reports')
   .option('-v, --verbose', 'Enable verbose logging')
   .action(async (files: string[], options) => {
@@ -48,7 +52,11 @@ program
   .command('report')
   .description('Generate report from stored data')
   .option('-c, --config <path>', 'Path to config file')
-  .option('-r, --reporter <type>', 'Reporter: console, json, html, github (comma-separated)', 'console')
+  .option(
+    '-r, --reporter <type>',
+    'Reporter: console, json, html, github (comma-separated)',
+    'console',
+  )
   .option('-o, --output <dir>', 'Output directory', '.flaky-detective/reports')
   .option('-v, --verbose', 'Enable verbose logging')
   .action(async (options) => {
@@ -113,7 +121,11 @@ program
     console.log('  npx flaky-detective analyze <test-results.json>');
   });
 
-function runReporters(reporterStr: string, outputDir: string, report: import('./core/types').FlakinessReport): void {
+function runReporters(
+  reporterStr: string,
+  outputDir: string,
+  report: import('./core/types').FlakinessReport,
+): void {
   const types = reporterStr.split(',').map((t: string) => t.trim());
 
   for (const type of types) {

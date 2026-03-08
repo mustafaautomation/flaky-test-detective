@@ -39,17 +39,21 @@ export class ConsoleReporter {
   }
 
   private printSummary(result: FlakinessReport): void {
-    const rateColor = result.overallFlakinessRate > 0.2 ? RED : result.overallFlakinessRate > 0.05 ? YELLOW : GREEN;
+    const rateColor =
+      result.overallFlakinessRate > 0.2 ? RED : result.overallFlakinessRate > 0.05 ? YELLOW : GREEN;
 
     console.log(`  Total Tests Tracked:  ${WHITE}${result.totalTests}${RESET}`);
     console.log(`  Flaky Tests:          ${YELLOW}${result.flakyTests}${RESET}`);
     console.log(`  Quarantined:          ${RED}${result.quarantinedTests}${RESET}`);
-    console.log(`  Flakiness Rate:       ${rateColor}${(result.overallFlakinessRate * 100).toFixed(1)}%${RESET}`);
+    console.log(
+      `  Flakiness Rate:       ${rateColor}${(result.overallFlakinessRate * 100).toFixed(1)}%${RESET}`,
+    );
     console.log();
   }
 
   private printRecord(record: FlakinessRecord): void {
-    const scoreColor = record.flakinessScore >= 0.3 ? RED : record.flakinessScore >= 0.1 ? YELLOW : GREEN;
+    const scoreColor =
+      record.flakinessScore >= 0.3 ? RED : record.flakinessScore >= 0.1 ? YELLOW : GREEN;
     const statusIcon = record.quarantined ? `${RED}QUARANTINED${RESET}` : `${GREEN}ACTIVE${RESET}`;
     const patterns = record.patterns.map((p) => this.formatPattern(p)).join(', ') || '-';
 
@@ -71,7 +75,9 @@ export class ConsoleReporter {
 
     console.log(`${BOLD}${RED}Quarantined Tests (${quarantined.length}):${RESET}`);
     for (const record of quarantined) {
-      console.log(`  ${RED}x${RESET} ${record.name} ${DIM}(score: ${(record.flakinessScore * 100).toFixed(0)}%)${RESET}`);
+      console.log(
+        `  ${RED}x${RESET} ${record.name} ${DIM}(score: ${(record.flakinessScore * 100).toFixed(0)}%)${RESET}`,
+      );
     }
     console.log();
 
