@@ -42,13 +42,28 @@ function readConfigFile(filePath: string): DetectiveConfig {
 }
 
 function mergeConfig(user: Partial<DetectiveConfig>): DetectiveConfig {
-  return {
+  const merged = {
     storage: { ...DEFAULT_CONFIG.storage, ...user.storage },
     thresholds: { ...DEFAULT_CONFIG.thresholds, ...user.thresholds },
     parsers: user.parsers || DEFAULT_CONFIG.parsers,
     reporters: user.reporters || DEFAULT_CONFIG.reporters,
     outputDir: user.outputDir || DEFAULT_CONFIG.outputDir,
   };
+
+  // Validate thresholds
+  if (merged.thresholds.flakiness < 0 || merged.thresholds.flakiness > 1) {
+    logger.warn(`Invalid flakiness threshold ${merged.thresholds.flakiness}, using default`);
+    merged.thresholds.flakiness = DEFAULT_CONFIG.thresholds.flakiness;
+  }
+  if (merged.thresholds.quarantine < 0 || merged.thresholds.quarantine > 1) {
+    logger.warn(`Invalid quarantine threshold ${merged.thresholds.quarantine}, using default`);
+    merged.thresholds.quarantine = DEFAULT_CONFIG.thresholds.quarantine;
+  }
+  if (merged.thresholds.minRuns < 1) {
+    merged.thresholds.minRuns = DEFAULT_CONFIG.thresholds.minRuns;
+  }
+
+  return merged;
 }
 
 export function writeDefaultConfig(outputPath: string): void {

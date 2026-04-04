@@ -1,5 +1,9 @@
 import { FlakinessReport } from '../core/types';
 
+function escapeMd(text: string): string {
+  return text.replace(/\|/g, '\\|').replace(/`/g, '\\`');
+}
+
 export class GithubReporter {
   report(result: FlakinessReport): string {
     const lines: string[] = [];
@@ -38,7 +42,7 @@ export class GithubReporter {
       const patterns = record.patterns.map((p) => `\`${p.type}\``).join(' ') || '-';
       const status = record.quarantined ? ':no_entry: Quarantined' : ':white_check_mark: Active';
       lines.push(
-        `| ${record.name} | ${(record.flakinessScore * 100).toFixed(0)}% | ${record.totalRuns} | ${record.passCount}/${record.failCount} | ${patterns} | ${status} |`,
+        `| ${escapeMd(record.name)} | ${(record.flakinessScore * 100).toFixed(0)}% | ${record.totalRuns} | ${record.passCount}/${record.failCount} | ${patterns} | ${status} |`,
       );
     }
 

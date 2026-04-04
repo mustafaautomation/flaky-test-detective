@@ -2,7 +2,6 @@
 
 import { Command } from 'commander';
 import * as path from 'path';
-import dotenv from 'dotenv';
 import { loadConfig, writeDefaultConfig } from './core/config';
 import { Analyzer } from './core/analyzer';
 import { ConsoleReporter } from './reporters/console.reporter';
@@ -11,14 +10,12 @@ import { HtmlReporter } from './reporters/html.reporter';
 import { GithubReporter } from './reporters/github.reporter';
 import { setLogLevel } from './utils/logger';
 
-dotenv.config();
-
 const program = new Command();
 
 program
   .name('flaky-detective')
   .description('Detect, track, and quarantine flaky tests')
-  .version('1.0.0');
+  .version('2.0.0');
 
 program
   .command('analyze')
@@ -43,8 +40,9 @@ program
     runReporters(options.reporter, options.output, report);
     analyzer.close();
 
+    // Log quarantine info but don't exit 1 — quarantine is intentional
     if (report.quarantinedTests > 0) {
-      process.exit(1);
+      console.log(`\n${report.quarantinedTests} test(s) quarantined. Use 'flaky-detective quarantine' for grep pattern.`);
     }
   });
 
@@ -144,6 +142,8 @@ function runReporters(
         console.log(md);
         break;
       }
+      default:
+        console.error(`Unknown reporter: "${type}". Valid: console, json, html, github`);
     }
   }
 }

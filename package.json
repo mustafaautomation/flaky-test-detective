@@ -1,6 +1,6 @@
 {
   "name": "flaky-test-detective",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Detect, track, and quarantine flaky tests with pattern analysis and trend reporting",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,7 +32,6 @@
   "bugs": { "url": "https://github.com/mustafaautomation/flaky-test-detective/issues" },
   "dependencies": {
     "commander": "^12.1.0",
-    "dotenv": "^16.4.7",
     "fast-xml-parser": "^4.5.1",
     "sql.js": "^1.11.0"
   },

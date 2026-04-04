@@ -33,8 +33,9 @@ export function percentile(values: number[], p: number): number {
   return sorted[lower] + (sorted[upper] - sorted[lower]) * (index - lower);
 }
 
-export function flakinessScore(passCount: number, failCount: number): number {
-  const total = passCount + failCount;
+export function flakinessScore(passCount: number, failCount: number, skipCount = 0): number {
+  const total = passCount + failCount + skipCount;
   if (total === 0) return 0;
+  // Score = 1 - (dominant outcome / total). Pure pass or pure fail = 0 (not flaky).
   return 1 - Math.max(passCount, failCount) / total;
 }

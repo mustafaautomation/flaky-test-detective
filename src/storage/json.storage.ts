@@ -76,7 +76,7 @@ export class JsonStorage extends BaseStorage {
         if (test.position !== undefined) {
           existing.positions = [...existing.positions, test.position].slice(-50);
         }
-        existing.flakinessScore = flakinessScore(existing.passCount, existing.failCount);
+        existing.flakinessScore = flakinessScore(existing.passCount, existing.failCount, existing.skipCount);
       } else {
         this.data.records[testId] = {
           testId,
@@ -111,7 +111,7 @@ export class JsonStorage extends BaseStorage {
 
   updateRecord(record: FlakinessRecord): void {
     this.data.records[record.testId] = record;
-    this.save();
+    // save() is called in close() — no per-record disk write
   }
 
   getTrends(days: number): TrendPoint[] {

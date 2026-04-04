@@ -35,13 +35,17 @@ export class Analyzer {
 
   analyze(filePaths: string[]): FlakinessReport {
     for (const filePath of filePaths) {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const run = this.parseFile(content);
-      if (run) {
-        this.storage.storeRun(run);
-        logger.info(`Ingested ${run.tests.length} tests from ${filePath} (${run.framework})`);
-      } else {
-        logger.warn(`Could not parse: ${filePath}`);
+      try {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const run = this.parseFile(content);
+        if (run) {
+          this.storage.storeRun(run);
+          logger.info(`Ingested ${run.tests.length} tests from ${filePath} (${run.framework})`);
+        } else {
+          logger.warn(`Could not parse: ${filePath}`);
+        }
+      } catch (err) {
+        logger.error(`Failed to read ${filePath}: ${(err as Error).message}`);
       }
     }
 
