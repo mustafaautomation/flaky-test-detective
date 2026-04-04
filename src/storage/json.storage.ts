@@ -76,7 +76,11 @@ export class JsonStorage extends BaseStorage {
         if (test.position !== undefined) {
           existing.positions = [...existing.positions, test.position].slice(-50);
         }
-        existing.flakinessScore = flakinessScore(existing.passCount, existing.failCount, existing.skipCount);
+        existing.flakinessScore = flakinessScore(
+          existing.passCount,
+          existing.failCount,
+          existing.skipCount,
+        );
       } else {
         this.data.records[testId] = {
           testId,

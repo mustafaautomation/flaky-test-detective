@@ -42,7 +42,9 @@ program
 
     // Log quarantine info but don't exit 1 — quarantine is intentional
     if (report.quarantinedTests > 0) {
-      console.log(`\n${report.quarantinedTests} test(s) quarantined. Use 'flaky-detective quarantine' for grep pattern.`);
+      console.log(
+        `\n${report.quarantinedTests} test(s) quarantined. Use 'flaky-detective quarantine' for grep pattern.`,
+      );
     }
   });
 
