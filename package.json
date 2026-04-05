@@ -32,7 +32,7 @@
   "bugs": { "url": "https://github.com/mustafaautomation/flaky-test-detective/issues" },
   "dependencies": {
     "commander": "^12.1.0",
-    "fast-xml-parser": "^4.5.1",
+    "fast-xml-parser": "^4.5.6",
     "sql.js": "^1.11.0"
   },
   "devDependencies": {
