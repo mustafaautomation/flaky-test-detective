@@ -9,13 +9,15 @@ import { JsonReporter } from './reporters/json.reporter';
 import { HtmlReporter } from './reporters/html.reporter';
 import { GithubReporter } from './reporters/github.reporter';
 import { setLogLevel } from './utils/logger';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../package.json');
 
 const program = new Command();
 
 program
   .name('flaky-detective')
   .description('Detect, track, and quarantine flaky tests')
-  .version('2.0.0');
+  .version(version);
 
 program
   .command('analyze')
@@ -107,7 +109,8 @@ program
     const analyzer = new Analyzer(config);
     await analyzer.init();
 
-    const report = analyzer.getReport();
+    const days = parseInt(options.days, 10);
+    const report = analyzer.getTrendsReport(days);
     runReporters(options.reporter, options.output, report);
     analyzer.close();
   });
@@ -146,6 +149,7 @@ function runReporters(
       }
       default:
         console.error(`Unknown reporter: "${type}". Valid: console, json, html, github`);
+        process.exitCode = 1;
     }
   }
 }

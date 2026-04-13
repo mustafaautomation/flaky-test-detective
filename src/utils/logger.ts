@@ -37,10 +37,11 @@ function log(level: LogLevel, message: string, data?: Record<string, unknown>): 
   const color = COLORS[level];
   const prefix = `${color}[${timestamp}] [${level.toUpperCase()}]${RESET}`;
 
+  const output = level === 'error' || level === 'warn' ? console.error : console.log;
   if (data) {
-    console.log(`${prefix} ${message}`, JSON.stringify(data, null, 2));
+    output(`${prefix} ${message}`, JSON.stringify(data, null, 2));
   } else {
-    console.log(`${prefix} ${message}`);
+    output(`${prefix} ${message}`);
   }
 }
 

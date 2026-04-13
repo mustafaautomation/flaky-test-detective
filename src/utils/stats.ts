@@ -7,7 +7,8 @@ export function standardDeviation(values: number[]): number {
   if (values.length < 2) return 0;
   const avg = mean(values);
   const squareDiffs = values.map((v) => Math.pow(v - avg, 2));
-  return Math.sqrt(mean(squareDiffs));
+  const variance = squareDiffs.reduce((sum, v) => sum + v, 0) / (values.length - 1);
+  return Math.sqrt(variance);
 }
 
 export function coefficientOfVariation(values: number[]): number {

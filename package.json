@@ -7,6 +7,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
       "require": "./dist/index.js"
     }
   },
@@ -28,7 +29,7 @@
   "author": "Quvantic <info@quvantic.com> (https://quvantic.com)",
   "license": "MIT",
   "repository": { "type": "git", "url": "https://github.com/mustafaautomation/flaky-test-detective.git" },
-  "homepage": "https://github.com/mustafaautomation/flaky-test-detective#readme",
+  "homepage": "https://quvantic.com",
   "bugs": { "url": "https://github.com/mustafaautomation/flaky-test-detective/issues" },
   "dependencies": {
     "commander": "^12.1.0",
@@ -47,5 +48,5 @@
     "vitest": "^3.0.0"
   },
   "engines": { "node": ">=18.0.0" },
-  "files": ["dist"]
+  "files": ["dist", "package.json"]
 }

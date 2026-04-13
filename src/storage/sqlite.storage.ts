@@ -67,8 +67,7 @@ export class SqliteStorage extends BaseStorage {
   }
 
   init(): void {
-    // Sync wrapper — call initAsync() for full async init
-    // For sync usage, we initialize inline
+    throw new Error('SqliteStorage requires async initialization. Call initAsync() instead.');
   }
 
   storeRun(run: ParsedRunResult): void {
@@ -95,7 +94,7 @@ export class SqliteStorage extends BaseStorage {
         const newFailCount = existing.failCount + failInc;
         const newSkipCount = existing.skipCount + skipInc;
         const newTotalRuns = existing.totalRuns + 1;
-        const newScore = flakinessScore(newPassCount, newFailCount);
+        const newScore = flakinessScore(newPassCount, newFailCount, newSkipCount);
         const durations = [...existing.durations, test.duration].slice(-50);
         const errors = test.error ? [...existing.errors, test.error].slice(-20) : existing.errors;
         const positions =
