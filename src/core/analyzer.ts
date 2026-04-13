@@ -57,6 +57,8 @@ export class Analyzer {
     if (run) {
       this.storage.storeRun(run);
       logger.info(`Ingested ${run.tests.length} tests (${run.framework})`);
+    } else {
+      logger.warn('Could not parse provided content');
     }
     return this.buildReport();
   }
@@ -65,12 +67,16 @@ export class Analyzer {
     return this.buildReport();
   }
 
+  getTrendsReport(days: number): FlakinessReport {
+    return this.buildReport(days);
+  }
+
   getQuarantinePattern(): string {
     const records = this.storage.getAllRecords();
     const quarantined = records.filter((r) => r.quarantined);
     if (quarantined.length === 0) return '';
 
-    return quarantined.map((r) => r.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    return quarantined.map((r) => `^${r.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`).join('|');
   }
 
   close(): void {
@@ -84,7 +90,7 @@ export class Analyzer {
     return parser.parse(content);
   }
 
-  private buildReport(): FlakinessReport {
+  private buildReport(trendDays = 30): FlakinessReport {
     const records = this.storage.getAllRecords();
 
     for (const record of records) {
@@ -109,7 +115,7 @@ export class Analyzer {
     );
 
     const quarantinedCount = records.filter((r) => r.quarantined).length;
-    const trends = this.storage.getTrends(30);
+    const trends = this.storage.getTrends(trendDays);
 
     return {
       timestamp: new Date().toISOString(),

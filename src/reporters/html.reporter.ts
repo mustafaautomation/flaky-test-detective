@@ -12,9 +12,7 @@ export class HtmlReporter {
 
   report(result: FlakinessReport): void {
     const dir = path.dirname(this.outputPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+    fs.mkdirSync(dir, { recursive: true });
 
     const html = this.generateHtml(result);
     fs.writeFileSync(this.outputPath, html, 'utf-8');

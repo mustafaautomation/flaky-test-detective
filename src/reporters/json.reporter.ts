@@ -12,9 +12,7 @@ export class JsonReporter {
 
   report(result: FlakinessReport): void {
     const dir = path.dirname(this.outputPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
+    fs.mkdirSync(dir, { recursive: true });
 
     fs.writeFileSync(this.outputPath, JSON.stringify(result, null, 2), 'utf-8');
     logger.info(`JSON report saved to ${this.outputPath}`);

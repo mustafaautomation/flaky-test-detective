@@ -24,9 +24,10 @@ describe('stats', () => {
   });
 
   describe('standardDeviation', () => {
-    it('should calculate standard deviation', () => {
+    it('should calculate sample standard deviation', () => {
       const result = standardDeviation([2, 4, 4, 4, 5, 5, 7, 9]);
-      expect(result).toBeCloseTo(2.0, 1);
+      // Sample std dev (Bessel's correction, divides by n-1)
+      expect(result).toBeCloseTo(2.138, 2);
     });
 
     it('should return 0 for fewer than 2 values', () => {

@@ -1,7 +1,7 @@
 // Core
 export { Analyzer } from './core/analyzer';
 export { loadConfig, writeDefaultConfig } from './core/config';
-export {
+export type {
   ParsedTestResult,
   ParsedRunResult,
   FlakinessRecord,
@@ -10,8 +10,8 @@ export {
   TrendPoint,
   DetectiveConfig,
   ReporterConfig,
-  DEFAULT_CONFIG,
 } from './core/types';
+export { DEFAULT_CONFIG } from './core/types';
 
 // Parsers
 export { BaseParser, detectParser } from './parsers/base.parser';
@@ -36,6 +36,7 @@ export { HtmlReporter } from './reporters/html.reporter';
 export { GithubReporter } from './reporters/github.reporter';
 
 // Utils
+export type { LogLevel } from './utils/logger';
 export { logger, setLogLevel, getLogLevel } from './utils/logger';
 export {
   flakinessScore,
