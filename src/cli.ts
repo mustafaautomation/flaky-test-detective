@@ -9,7 +9,7 @@ import { JsonReporter } from './reporters/json.reporter';
 import { HtmlReporter } from './reporters/html.reporter';
 import { GithubReporter } from './reporters/github.reporter';
 import { setLogLevel } from './utils/logger';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { version } = require('../package.json');
 
 const program = new Command();
