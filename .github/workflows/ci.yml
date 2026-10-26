@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20, 22]
+        node-version: [22, 24]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -44,8 +44,8 @@ jobs:
         run: npm run build
 
       - name: Upload build artifacts
-        if: matrix.node-version == 20
-        uses: actions/upload-artifact@v4
+        if: matrix.node-version == 24
+        uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
